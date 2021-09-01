@@ -5,6 +5,8 @@ Gerdu
 [![build-and-test](https://github.com/gerdu-tool/cli/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/gerdu-tool/cli/actions/workflows/build-and-test.yml)
 [![npm version](https://badge.fury.io/js/@gerdu%2Fcli.svg)](https://badge.fury.io/js/@gerdu%2Fcli)
 
+[![NPM](https://nodei.co/npm/@gerdu/cli.png?mini=true)](https://npmjs.org/package/@gerdu/cli)
+
 Gerdu is an open-source tool for running and managing multi docker-compose applications on Docker defined using the Gerdu file format. Once you have Configuration files, you can create and start your applications with a single command: `gerdu up`
 
 Gerdu heavily realies on `docker-compose` spec to deploy application locally. 
