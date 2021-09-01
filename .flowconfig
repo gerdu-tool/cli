@@ -1,0 +1,24 @@
+[ignore]
+.*\.json
+.*/src2/.*
+.*/test2/.*
+.*/test/.*
+
+[include]
+
+[libs]
+flow-typed
+
+[lints]
+
+[options]
+module.name_mapper='^@app\/\(.*\)$' -> '<PROJECT_ROOT>/src/\1'
+module.name_mapper='^@test\/\(.*\)$' -> '<PROJECT_ROOT>/test/\1'
+
+
+[strict]
+
+[untyped]
+.*/node_modules/*
+src2
+test2

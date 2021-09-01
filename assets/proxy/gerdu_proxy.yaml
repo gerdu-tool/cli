@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  gerdu_traefik:
+    image: traefik:v2.5
+    command:
+      - "--log.level=INFO"
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--entrypoints.public.address=:80"
+      - "--providers.docker.exposedbydefault=false"
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"

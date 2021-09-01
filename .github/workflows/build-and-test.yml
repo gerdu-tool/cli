@@ -1,0 +1,34 @@
+name: build-and-test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Installing
+        run: yarn install --frozen-lockfile
+
+      - name: Building
+        run: yarn run build
+
+      - name: Testing
+        run: yarn run test:coverage
+
+      - name: Linting
+        run: yarn run lint
+
+      - name: Linting:Flow
+        run: yarn run flow

@@ -1,0 +1,19 @@
+{
+  "presets": [
+    ["@babel/preset-env",{"targets": {"node": "current"}}],
+    [ "@babel/preset-flow", { "all": true }]
+  ],
+  "plugins": [
+    [
+      "babel-plugin-webpack-alias"
+    ],
+    [
+      "transform-flow-strip-types"
+    ],
+    ["@babel/plugin-transform-for-of"],
+    ["@babel/plugin-proposal-optional-chaining"],
+    ["@babel/plugin-transform-async-to-generator"],
+    ["@babel/plugin-proposal-async-generator-functions"],
+    ["@babel/plugin-proposal-throw-expressions"]
+  ]
+}

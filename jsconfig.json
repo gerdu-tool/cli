@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "es6",
+    "target": "es6",
+    "allowSyntheticDefaultImports": true,
+    "checkJs": false,
+    "paths": {
+      "@app/*": [ "./src/*"],
+      "@test/*": ["./test/*"],
+    }
+  },
+  "typeAcquisition": {
+    "include": ["jest"]
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

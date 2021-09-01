@@ -1,0 +1,42 @@
+name: release-npm
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+          registry-url: "https://registry.npmjs.org/"
+          scope: "@gerdu"
+          always-auth: true
+
+      - name: Installing
+        run: yarn install --frozen-lockfile
+
+      - name: Building
+        run: yarn run build
+
+      - name: Testing
+        run: yarn run test:coverage
+
+      - name: Linting
+        run: yarn run lint
+
+      - name: Linting:Flow
+        run: yarn run flow
+
+      - name: Set yarn package version
+        run: RELEASE_TAG=$(git tag --sort=committerdate) && yarn version --force --no-git-tag-version --no-commit-hooks --new-version $RELEASE_TAG
+
+      - name: Publishing
+        run: yarn publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+          NPM_AUTH_TOKEN: ${{ secrets.npm_token }}

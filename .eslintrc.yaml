@@ -1,0 +1,178 @@
+parser: babel-eslint
+extends: 
+  - airbnb-base
+  - plugin:flowtype/recommended
+
+parserOptions:
+  ecmaFeatures:
+    spread: true
+    experimentalObjectRestSpread: true
+    impliedStrict: true
+  sourceType: module
+
+env:
+  es6: true
+  browser: true
+  jest: true
+  jest/globals: true
+
+rules:
+  max-len: 
+    - warn
+    - 200
+  camelcase:
+    - off
+  no-redeclare: error
+  eol-last: error
+  semi: error
+  prefer-spread: error
+  comma-dangle:
+    - error
+    - always-multiline
+  no-undef: error
+  prefer-const: error
+  one-var:
+    - error
+    - never
+  no-unused-vars: error
+  quote-props:
+    - error
+    - as-needed
+  prefer-template: error
+  template-curly-spacing:
+    - error
+    - never
+  no-new-wrappers: error
+  radix: error
+  no-return-await: error
+  import/first: error
+  import/extensions: error
+  import/no-unresolved: error
+  import/no-absolute-path: error
+  import/no-duplicates: error
+  no-console:
+    - error
+    - allow:
+        - error
+  no-async-without-await/no-async-without-await:
+    - error
+    - allow-throw
+  no-param-reassign: error
+  no-nested-ternary: error
+  indent:
+    - error
+  no-plusplus: 0
+  no-shadow: error
+  no-use-before-define: error
+  no-mixed-operators: error
+  no-prototype-builtins: error
+  import/no-extraneous-dependencies: error
+  no-underscore-dangle: error
+  array-callback-return: error
+  vars-on-top: 0
+  no-case-declarations: error
+  no-return-assign: error
+  no-void: error
+  no-sequences: error
+  require-await: error
+  eqeqeq: error
+  new-cap: error
+  import/prefer-default-export: error
+  no-restricted-globals: error
+  consistent-return: error
+  no-irregular-whitespace: error
+  no-restricted-syntax: 
+    - error
+    - ForInStatement
+    - LabeledStatement
+    - WithStatement
+  no-empty: error
+  prefer-destructuring: error
+  prefer-rest-params: error
+  import/no-named-as-default-member: error
+  default-case: error
+  no-duplicate-case: error
+  no-throw-literal: error
+  no-unused-expressions: error
+  no-multi-spaces: error
+  brace-style: error
+  no-empty-pattern: error
+  valid-typeof: error
+  class-methods-use-this: error
+  no-alert: error
+  no-await-in-loop: 
+    - off
+  guard-for-in: error
+  no-tabs: error
+  no-unreachable: error
+  no-multi-str: error
+  no-fallthrough: error
+  implicit-arrow-linebreak: error
+  import/no-named-as-default: error
+  import/named: error
+  no-const-assign: error
+  no-mixed-spaces-and-tabs: error
+  no-multi-assign: error
+  no-async-promise-executor: error
+  no-useless-catch: error
+  no-var: error
+  block-scoped-var: error
+  no-continue: error
+  no-useless-escape: error
+  no-loop-func: error
+  no-lonely-if: error
+  no-lone-blocks: 
+    - off
+  semi-style: error
+  no-constant-condition: error
+  no-useless-constructor: error
+  no-cond-assign: error
+  prefer-promise-reject-errors: error
+  no-new: error
+  no-dupe-keys: error
+  max-classes-per-file: error
+  no-global-assign: error
+  object-curly-newline: error
+  global-require: error
+  no-trailing-spaces: error
+  no-unneeded-ternary: error
+  no-multiple-empty-lines: error
+  space-before-function-paren: error
+  import/newline-after-import: error
+  no-else-return: error
+  no-extra-boolean-cast: error
+  import/no-mutable-exports: error
+  newline-per-chained-call: 
+    - off
+  import/order: off
+  # Flow-Type
+  flowtype/define-flow-type: 2
+  flowtype/require-parameter-type: 1
+
+plugins:
+  - import
+  - jest
+  - no-async-without-await
+  - flowtype
+  
+
+settings:
+  import/resolver:
+    node:
+      extensions:
+        - ".js"
+      paths:
+        - src
+      moduleDirectory:
+        - node_modules
+        - .
+    alias:
+      extensions: ['.js']
+      map:
+        - ['@app', './src']
+        - ['@test', './test']
+  flowtype:
+    onlyFilesWithFlowAnnotation: true
+
+globals:
+  logger: true

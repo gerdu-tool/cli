@@ -1,0 +1,13 @@
+version: "1.0"
+
+name: "sample-workspace"
+
+charts:
+  - ./service1.yaml
+  - ./service2.yaml
+  - ./service3.yaml
+
+profiles:
+  profile1:
+    - service1
+    - service1_db

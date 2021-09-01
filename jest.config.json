@@ -1,0 +1,38 @@
+{
+  "name": "gerdu",
+  "verbose": true,
+  "testMatch": ["<rootDir>/test/**/*.spec.js"],
+  "moduleFileExtensions": ["js", "json"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "moduleNameMapper": {
+		"@app/(.*)$": "<rootDir>/src/$1",
+    "@test/(.*)$": "<rootDir>/test/$1"
+	},
+  "collectCoverageFrom": [
+    "src/**/*.(t|j)s",
+    "!src/index.js",
+    "!src/type.js"
+  ],
+  "coverageDirectory": "coverage",
+  "reporters": ["default"],
+  "globals": {},
+  "setupFiles": [
+    "<rootDir>/test/__setup__/fs.js",
+    "<rootDir>/test/__setup__/logger.js",
+    "<rootDir>/test/__setup__/console.js",
+    "<rootDir>/test/__setup__/child_process.js"
+  ],
+  "setupFilesAfterEnv":[
+    "<rootDir>/test/__setup__/jest.js"
+  ],
+  "coverageReporters": ["text", "html", "text-summary", "lcov"],
+  "coverageThreshold": {
+    "global": {
+      "branches": 100,
+      "functions": 100,
+      "lines": 100,
+      "statements": -10
+    }
+  }
+}

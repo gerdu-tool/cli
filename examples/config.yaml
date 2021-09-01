@@ -1,0 +1,15 @@
+version: "1.0"
+
+workspaces:
+  - name: ws-1
+    path: git
+    scope:
+      profiles:
+        - q
+        - b
+      service:
+        - a
+        - b
+        
+settings:
+  active_workspace: ws-1

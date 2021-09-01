@@ -1,0 +1,35 @@
+version: "1.0"
+
+name: sample-chart
+repo:
+  git: git@github.com:gerdu-tool/cli.git
+  branch: main
+  path: cli
+
+stages:
+  pull:
+    - echo "PULLING"
+  sync:
+    - echo "SYNCING"
+  setup:
+    - echo "SETTING UP"
+
+mappings:
+  api:
+    port: 8080
+    path: /hello
+    service: hello-world
+    host: api.gerdu.local
+    cors:
+      allowOrigins:
+        - ui.gerdu.local
+        - ui2.gerdu.local
+      allowCredentials: false
+      allowMethods: GET, PUT, POST, PATCH, DELETE, OPTIONS
+      allowHeaders: Content-Type,Authorization
+
+compose:
+  version: "3.9"
+  services:
+    hello-world:
+      image: hello-world
