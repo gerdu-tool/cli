@@ -23,25 +23,25 @@ describe('compose-exec-command', () => {
   it('execs compose cmd without parameters', async () => {
     await command.run({ cmd: '' });
     expect(composeService.exec).toHaveBeenCalledWith({
-      workspace, services: [], profiles: [], cmd: '', options: { interactive: true },
+      context, services: [], profiles: [], cmd: '', options: { interactive: true },
     });
   });
   it('execs compose cmd for all services', async () => {
     await command.run({ parameters, cmd });
     expect(composeService.exec).toHaveBeenCalledWith({
-      workspace, services: [], profiles: [], cmd, options: { interactive: true },
+      context, services: [], profiles: [], cmd, options: { interactive: true },
     });
   });
   it('execs compose cmd for specified services', async () => {
     await command.run({ parameters, services, cmd });
     expect(composeService.exec).toHaveBeenCalledWith({
-      workspace, services, profiles: [], cmd, options: { interactive: true },
+      context, services, profiles: [], cmd, options: { interactive: true },
     });
   });
   it('execs compose cmd for specified profiles', async () => {
     await command.run({ parameters, profiles, cmd });
     expect(composeService.exec).toHaveBeenCalledWith({
-      workspace, services: [], profiles, cmd, options: { interactive: true },
+      context, services: [], profiles, cmd, options: { interactive: true },
     });
   });
 });

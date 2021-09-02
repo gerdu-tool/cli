@@ -74,9 +74,10 @@ const createGerduConfig = (params: {settings: any, workspaces: GerduConfigWorksp
   ...params,
 });
 /// ////////////////////////////////////
-const createContext = (params: {workspace: Workspace, services: string[]} = {}): Context => ({
+const createContext = (params: {workspace: Workspace, services: string[], composeFile: string} = {}): Context => ({
   workspace: createWorkspace(),
   services: ['service1', 'service2'],
+  composeFile: './workspace/ws-1/docker-compose.yaml',
   ...params,
 });
 export default {
