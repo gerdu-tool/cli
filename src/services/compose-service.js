@@ -23,7 +23,7 @@ const exec = async ({
   await dockerCompose.exec({
     cmd,
     cwd: context.workspace.path,
-    files: [context.composeFile],
+    files: [],
     services: getServices(context, services, profiles),
     options,
   });
