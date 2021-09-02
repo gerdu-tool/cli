@@ -5,12 +5,12 @@ import contextService from '@app/services/context-service';
 
 type Props = { services?: string[], profiles?: string[], cmd: string }
 const composeCommand = async ({ services = [], profiles = [], cmd }: Props) => {
-  const { workspace } = contextService.fetch();
+  const context = contextService.fetch();
   await composeService.exec({
-    workspace,
+    cmd,
+    context,
     services,
     profiles,
-    cmd,
     options: { interactive: true },
   });
   logger.commandCompleted();
