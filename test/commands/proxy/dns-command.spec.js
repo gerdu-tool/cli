@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import fs from '@app/helpers/fs';
 import logger from '@app/helpers/logger';
 import faker from '@test/__utils__/faker';
 import hostFile from '@app/helpers/host-file';
@@ -27,8 +28,13 @@ describe('dns-command', () => {
     jest.spyOn(hostFile, 'generateHostsRecords').mockImplementation(() => 'dns-records');
   });
   it('generates dns records', async () => {
-    await command.run();
+    await command.run({});
     expect(logger.write).toHaveBeenCalledWith('dns-records');
+    expect(hostFile.generateHostsRecords).toHaveBeenCalledWith(mappings, context.workspace.name);
+  });
+  it('writes records into hosts file', async () => {
+    await command.run({ write: true });
+    expect(fs.writeAllText).toHaveBeenCalledWith('/etc/hosts', 'dns-records');
     expect(hostFile.generateHostsRecords).toHaveBeenCalledWith(mappings, context.workspace.name);
   });
 });

@@ -136,9 +136,11 @@ export default (argv: any): Promise<void> => {
       .description('lists mappings')
       .action(() => proxyLsCommand.run());
 
-    proxyCommand.command('dns')
+    const dnsCommand = proxyCommand.command('dns');
+    dnsCommand
+      .option('-w, --write', 'write to hosts')
       .description('generates dns records')
-      .action(() => proxyDnsCommand.run());
+      .action(() => proxyDnsCommand.run({ write: dnsCommand.opts().write }));
   }
 
   return commander.parseAsync(argv);

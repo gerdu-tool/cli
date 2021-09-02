@@ -195,7 +195,12 @@ describe('app', () => {
     it('prints updated dns records', async () => {
       jest.spyOn(proxyDnsCommand, 'run').mockImplementation(() => Promise.resolve());
       await app(['node', 'gerdu', 'proxy', 'dns']);
-      expect(proxyDnsCommand.run).toHaveBeenCalledWith();
+      expect(proxyDnsCommand.run).toHaveBeenCalledWith({});
+    });
+    it('writes dns records into hosts file', async () => {
+      jest.spyOn(proxyDnsCommand, 'run').mockImplementation(() => Promise.resolve());
+      await app(['node', 'gerdu', 'proxy', 'dns', '-w']);
+      expect(proxyDnsCommand.run).toHaveBeenCalledWith({ write: true });
     });
     it('list all mappings', async () => {
       jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => Promise.resolve());
