@@ -1,5 +1,5 @@
 export const TOOL_NAME = 'gerdu';
-export const TOOL_VERSION = '1.0.0';
+export const TOOL_VERSION = '1.0.2';
 export const GERDU_HOME_DIR_NAME = '.gerdu';
 export const GERDU_CONFIG_FILE_NAME = 'config.yaml';
 export const GERDU_CACHE_DIR_NAME = 'cache';
