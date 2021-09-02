@@ -16,3 +16,5 @@ export const ASSETS_DIR_NAME = 'assets';
 export const PROXY_DIR_NAME = 'proxy';
 export const PROXY_SERVICE_NAME = 'gerdu_traefik';
 export const PROXY_COMPOSE_FILE_NAME = 'gerdu_proxy.yaml';
+
+export const HOST_FILE = '/etc/hosts';
