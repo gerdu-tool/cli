@@ -2,15 +2,12 @@ import path from '@app/helpers/path';
 import faker from '@test/__utils__/faker';
 import dockerCompose from '@app/helpers/docker-compose';
 import composeService from '@app/services/compose-service';
-import {
-  WORKSPACE_CACHE_DIR_NAME, WORKSPACE_COMPOSE_FILE_NAME,
-} from '@app/consts';
+import { WORKSPACE_COMPOSE_FILE_NAME } from '@app/consts';
 
 describe('compose-service', () => {
   const cmd = 'rm -f -s -v';
   const workspace = faker.createWorkspace();
-  const cacheDirectory = path.resolve(workspace.path, WORKSPACE_CACHE_DIR_NAME);
-  const files = [path.resolve(cacheDirectory, WORKSPACE_COMPOSE_FILE_NAME)];
+  const files = [path.resolve(workspace.path, WORKSPACE_COMPOSE_FILE_NAME)];
   const services = ['service1'];
   const profiles = [workspace.profiles[0].name];
   const profile1Services = workspace.profiles[0].services;

@@ -7,7 +7,7 @@ export const GERDU_CACHE_DIR_NAME = 'cache';
 export const WORKSPACE_CACHE_DIR_NAME = '.gerdu';
 export const WORKSPACE_CACHE_TEMP_DIR_NAME = '.temp';
 export const WORKSPACE_CONFIG_FILE_NAME = '.gerdu.yaml';
-export const WORKSPACE_COMPOSE_FILE_NAME = 'compose.yaml';
+export const WORKSPACE_COMPOSE_FILE_NAME = 'docker-compose.yaml';
 export const WORKSPACE_CACHE_CONTEXT_FILE_NAME = 'context.json';
 
 export const SHELL_CMD = '/bin/bash';

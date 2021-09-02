@@ -20,7 +20,7 @@ describe('install-sync-command', () => {
   const mapping = workspace.charts[0].mappings[0];
   const cacheDirectory = path.resolve(workspace.path, WORKSPACE_CACHE_DIR_NAME);
   const tempDirectory = path.resolve(cacheDirectory, WORKSPACE_CACHE_TEMP_DIR_NAME);
-  const finalComposeFile = path.resolve(cacheDirectory, WORKSPACE_COMPOSE_FILE_NAME);
+  const finalComposeFile = path.resolve(workspace.path, WORKSPACE_COMPOSE_FILE_NAME);
   const chartSpec = path.resolve(tempDirectory, '1-compose.yaml');
 
   beforeEach(() => {

@@ -3,12 +3,12 @@ import path from '@app/helpers/path';
 import type { Workspace, Profile } from '@app/type';
 import dockerCompose from '@app/helpers/docker-compose';
 import {
-  WORKSPACE_CACHE_DIR_NAME, WORKSPACE_COMPOSE_FILE_NAME,
+  WORKSPACE_COMPOSE_FILE_NAME,
 } from '@app/consts';
 
 const getFiles = (workspace: Workspace) => {
-  const cacheDirectory = path.resolve(workspace.path, WORKSPACE_CACHE_DIR_NAME);
-  return [path.resolve(cacheDirectory, WORKSPACE_COMPOSE_FILE_NAME)];
+  const dockerComposeFilePath = path.resolve(workspace.path, WORKSPACE_COMPOSE_FILE_NAME);
+  return [dockerComposeFilePath];
 };
 const getServices = (workspace: Workspace, services: string[], profiles: string[]) => [
   ...services,
