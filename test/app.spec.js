@@ -17,6 +17,10 @@ import viewLsCommand from '@app/commands/view/ls-command';
 // Compose
 import composeExecCommand from '@app/commands/compose/compose-command';
 
+// proxy
+import proxyLsCommand from '@app/commands/proxy/ls-command';
+import proxyDnsCommand from '@app/commands/proxy/dns-command';
+
 describe('app', () => {
   beforeEach(() => {
     jest.restoreAllMocks();
@@ -187,6 +191,16 @@ describe('app', () => {
       jest.spyOn(composeExecCommand, 'run').mockImplementation(() => Promise.resolve());
       await app(['node', 'gerdu', 'proxy', 'logs']);
       expect(composeExecCommand.run).toHaveBeenCalledWith({ services: [PROXY_SERVICE_NAME], profiles: [], cmd: 'logs -f' });
+    });
+    it('prints updated dns records', async () => {
+      jest.spyOn(proxyDnsCommand, 'run').mockImplementation(() => Promise.resolve());
+      await app(['node', 'gerdu', 'proxy', 'dns']);
+      expect(proxyDnsCommand.run).toHaveBeenCalledWith();
+    });
+    it('list all mappings', async () => {
+      jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => Promise.resolve());
+      await app(['node', 'gerdu', 'proxy', 'ls']);
+      expect(proxyLsCommand.run).toHaveBeenCalledWith();
     });
   });
 });

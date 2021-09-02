@@ -18,6 +18,10 @@ import lsViewCommand from '@app/commands/view/ls-command';
 // compose
 import composeExecCommand from '@app/commands/compose/compose-command';
 
+// proxy
+import proxyLsCommand from '@app/commands/proxy/ls-command';
+import proxyDnsCommand from '@app/commands/proxy/dns-command';
+
 export default (argv: any): Promise<void> => {
   const commander = new Command(TOOL_NAME)
     .version(TOOL_VERSION)
@@ -28,33 +32,33 @@ export default (argv: any): Promise<void> => {
   {
     const wsCommand = commander.command('ws').description('manage workspaces');
     wsCommand.command('add <name> <path>')
-      .description('add an existing workspace')
+      .description('adds an existing workspace')
       .action((name: string, workspacePath: string) => addWorkspaceCommand.run({ name, workspacePath }));
     wsCommand.command('ls')
-      .description('list all workspaces')
+      .description('lists all workspaces')
       .action(() => lsWorkspaceCommand.run());
     wsCommand.command('switch <name>')
-      .description('switch to workspace')
+      .description('switchs to workspace')
       .action((name: string) => switchWorkspaceCommand.run({ name }));
   }
 
   // setup
   {
     commander.command('install')
-      .description('install charts')
+      .description('installs charts')
       .action(async () => {
         await pullInstallCommand.run();
         await syncInstallCommand.run();
         await setupInstallCommand.run({ });
       });
     commander.command('pull')
-      .description('pull charts')
+      .description('pulls charts')
       .action(() => pullInstallCommand.run());
     commander.command('sync')
-      .description('sync charts')
+      .description('syncs charts')
       .action(() => syncInstallCommand.run());
     commander.command('setup [charts...]')
-      .description('setup charts or services')
+      .description('setups charts or services')
       .action((charts: string[]) => setupInstallCommand.run({ charts }));
   }
 
@@ -63,7 +67,7 @@ export default (argv: any): Promise<void> => {
     const composeCommand = commander.option('-p, --profile <profiles...>', 'enable profile');
     composeCommand.command('build [services...]')
       .option('-p, --profile <profiles...>', 'enable profile')
-      .description('build or rebuild services')
+      .description('builds or rebuilds services')
       .action((services: string[]) => composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'build' }));
 
     composeCommand.command('up [services...]')
@@ -77,7 +81,7 @@ export default (argv: any): Promise<void> => {
       .action((services: string[]) => composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'rm -f -s -v' }));
 
     composeCommand.command('logs [services...]')
-      .description('display services logs')
+      .description('displays services logs')
       .option('-p, --profile <profiles...>', 'enable profile')
       .action((services: string[]) => composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'logs -f' }));
 
@@ -92,12 +96,12 @@ export default (argv: any): Promise<void> => {
       .action((services: string[]) => composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'kill' }));
 
     commander.command('ps')
-      .description('list running containers')
+      .description('lists running containers')
       .action(() => composeExecCommand.run({ cmd: 'ps' }));
 
     commander.command('exec <service> <args...>')
       .allowUnknownOption()
-      .description('execute a command in a running service')
+      .description('executes a command in a running service')
       .action((service: string) => composeExecCommand.run({ cmd: `exec ${service} ${commander.args.slice(2).join(' ')}` }));
 
     commander.command('compose <args...>')
@@ -109,7 +113,7 @@ export default (argv: any): Promise<void> => {
   // view
   {
     commander.command('ls')
-      .description('list services and profiles')
+      .description('lists services and profiles')
       .action(() => lsViewCommand.run());
   }
 
@@ -125,8 +129,16 @@ export default (argv: any): Promise<void> => {
       .action(() => composeExecCommand.run({ services: [PROXY_SERVICE_NAME], profiles: [], cmd: 'rm -f -s -v' }));
 
     proxyCommand.command('logs')
-      .description('display proxy services logs')
+      .description('displays proxy services logs')
       .action(() => composeExecCommand.run({ services: [PROXY_SERVICE_NAME], profiles: [], cmd: 'logs -f' }));
+
+    proxyCommand.command('ls')
+      .description('lists mappings')
+      .action(() => proxyLsCommand.run());
+
+    proxyCommand.command('dns')
+      .description('generates dns records')
+      .action(() => proxyDnsCommand.run());
   }
 
   return commander.parseAsync(argv);
