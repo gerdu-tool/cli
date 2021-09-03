@@ -20,9 +20,6 @@ jobs:
       - name: Installing
         run: yarn install --frozen-lockfile
 
-      - name: Building
-        run: yarn run build
-
       - name: Testing
         run: yarn run test:coverage
 
@@ -32,8 +29,20 @@ jobs:
       - name: Linting:Flow
         run: yarn run flow
 
-      - name: Set yarn package version
-        run: RELEASE_TAG=$(git tag --sort=committerdate) && yarn version --force --no-git-tag-version --no-commit-hooks --new-version $RELEASE_TAG
+      - name: set RELEASE_TAG
+        run: echo "RELEASE_TAG=$(git tag --sort=committerdate)" >> $GITHUB_ENV
+
+      - name: set package version
+        run: yarn version --force --no-git-tag-version --no-commit-hooks --new-version $RELEASE_TAG
+
+      - name: install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: update package.json version
+        run: echo "`jq '.version="${RELEASE_TAG}"' package.json`" > package.json
+
+      - name: Building
+        run: yarn run build:prod
 
       - name: Publishing
         run: yarn publish --access public

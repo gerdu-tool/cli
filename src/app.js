@@ -1,6 +1,8 @@
 // @flow
 import { Command } from 'commander';
-import { TOOL_NAME, TOOL_VERSION, PROXY_SERVICE_NAME } from '@app/consts';
+// $FlowFixMe
+import packageJson from '@root/package.json';
+import { TOOL_NAME, PROXY_SERVICE_NAME } from '@app/consts';
 
 // Workspace
 import lsWorkspaceCommand from '@app/commands/workspace/ls-command';
@@ -24,7 +26,7 @@ import proxyDnsCommand from '@app/commands/proxy/dns-command';
 
 export default (argv: any): Promise<void> => {
   const commander = new Command(TOOL_NAME)
-    .version(TOOL_VERSION)
+    .version(packageJson.version)
     .name(TOOL_NAME)
     .description('Define and manage micro services with docker for development');
 

@@ -171,6 +171,7 @@ settings:
       map:
         - ['@app', './src']
         - ['@test', './test']
+        - ['@root', './']
   flowtype:
     onlyFilesWithFlowAnnotation: true
 
