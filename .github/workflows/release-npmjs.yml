@@ -39,7 +39,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: update package.json version
-        run: echo "`jq '.version="${RELEASE_TAG}"' package.json`" > package.json
+        run: echo $(jq ".version=\"$RELEASE_TAG\"" package.json) > package.json
 
       - name: Building
         run: yarn run build:prod
