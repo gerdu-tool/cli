@@ -1,6 +1,7 @@
 // @flow
 import { Command } from 'commander';
-import packageJson from '../package.json';
+// $FlowFixMe
+import packageJson from '@root/package.json';
 import { TOOL_NAME, PROXY_SERVICE_NAME } from '@app/consts';
 
 // Workspace
