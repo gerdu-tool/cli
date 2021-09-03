@@ -30,7 +30,7 @@ jobs:
         run: yarn run flow
 
       - name: set RELEASE_TAG
-        run: echo "$(git tag --sort=committerdate)" >> $GITHUB_ENV
+        run: echo "RELEASE_TAG=$(git tag --sort=committerdate)" >> $GITHUB_ENV
 
       - name: set package version
         run: yarn version --force --no-git-tag-version --no-commit-hooks --new-version $RELEASE_TAG
