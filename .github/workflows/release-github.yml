@@ -1,8 +1,18 @@
 name: release-github
 
+# on:
+#   release:
+#     types: [published]
+
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+      - next
+  pull_request:
+    branches:
+      - main
+      - next
 
 jobs:
   release:
@@ -20,9 +30,6 @@ jobs:
       - name: Installing
         run: yarn install --frozen-lockfile
 
-      - name: Building
-        run: yarn run build
-
       - name: Testing
         run: yarn run test:coverage
 
@@ -32,20 +39,29 @@ jobs:
       - name: Linting:Flow
         run: yarn run flow
 
-      - name: Authenticate with GitHub package registry
-        run: yarn config set @gerdu-tool:registry https://npm.pkg.github.com
+      - name: export RELEASE_TAG
+        run: export RELEASE_TAG=$(git tag --sort=committerdate)
 
-      - name: Set yarn package version
-        run: RELEASE_TAG=$(git tag --sort=committerdate) && yarn version --force --no-git-tag-version --no-commit-hooks --new-version $RELEASE_TAG
+      - name: set package version
+        run: yarn version --force --no-git-tag-version --no-commit-hooks --new-version $RELEASE_TAG
 
       - name: install jq
         run: sudo apt-get update && sudo apt-get install -y jq
-      
+
       - name: update package.json scope
         run: echo "`jq '.name="@gerdu-tool/cli"' package.json`" > package.json
+      
+      - name: update package.json version
+        run: echo "`jq '.version="${RELEASE_TAG}"' package.json`" > package.json
 
-      - name: Publishing
-        run: yarn publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Building
+        run: yarn run build:prod
+
+      - name: Authenticate with GitHub package registry
+        run: yarn config set @gerdu-tool:registry https://npm.pkg.github.com
+
+      # - name: Publishing
+      #   run: yarn publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - next
   pull_request:
     branches:
       - main
+      - next
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
@@ -21,9 +23,6 @@ jobs:
       - name: Installing
         run: yarn install --frozen-lockfile
 
-      - name: Building
-        run: yarn run build
-
       - name: Testing
         run: yarn run test:coverage
 
@@ -32,3 +31,6 @@ jobs:
 
       - name: Linting:Flow
         run: yarn run flow
+
+      - name: Building
+        run: yarn run build:prod
