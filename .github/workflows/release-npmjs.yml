@@ -1,51 +1,51 @@
-# name: release-npm
+name: release-npm
 
-# on:
-#   release:
-#     types: [published]
+on:
+  release:
+    types: [published]
 
-# jobs:
-#   release:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-#       - uses: actions/setup-node@v2
-#         with:
-#           node-version: 14.x
-#           registry-url: "https://registry.npmjs.org/"
-#           scope: "@gerdu"
-#           always-auth: true
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+          registry-url: "https://registry.npmjs.org/"
+          scope: "@gerdu"
+          always-auth: true
 
-#       - name: Installing
-#         run: yarn install --frozen-lockfile
+      - name: Installing
+        run: yarn install --frozen-lockfile
 
-#       - name: Testing
-#         run: yarn run test:coverage
+      - name: Testing
+        run: yarn run test:coverage
 
-#       - name: Linting
-#         run: yarn run lint
+      - name: Linting
+        run: yarn run lint
 
-#       - name: Linting:Flow
-#         run: yarn run flow
+      - name: Linting:Flow
+        run: yarn run flow
 
-#       - name: set RELEASE_TAG
-#         run: echo "RELEASE_TAG=$(git tag --sort=committerdate)" >> $GITHUB_ENV
+      - name: set RELEASE_TAG
+        run: echo "RELEASE_TAG=$(git tag --sort=committerdate)" >> $GITHUB_ENV
 
-#       - name: set package version
-#         run: yarn version --force --no-git-tag-version --no-commit-hooks --new-version $RELEASE_TAG
+      - name: set package version
+        run: yarn version --force --no-git-tag-version --no-commit-hooks --new-version $RELEASE_TAG
 
-#       - name: install jq
-#         run: sudo apt-get update && sudo apt-get install -y jq
+      - name: install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
 
-#       - name: update package.json version
-#         run: echo $(jq ".version=\"$RELEASE_TAG\"" package.json) > package.json
+      - name: update package.json version
+        run: echo $(jq ".version=\"$RELEASE_TAG\"" package.json) > package.json
 
-#       - name: Building
-#         run: yarn run build:prod
+      - name: Building
+        run: yarn run build:prod
 
-#       - name: Publishing
-#         run: yarn publish --access public
-#         env:
-#           NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
-#           NPM_AUTH_TOKEN: ${{ secrets.npm_token }}
+      - name: Publishing
+        run: yarn publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+          NPM_AUTH_TOKEN: ${{ secrets.npm_token }}
