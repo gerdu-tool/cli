@@ -160,6 +160,8 @@ CLI
 ### Proxy commands
 - `$ gerdu proxy up` starts proxy service
 - `$ gerdu proxy down` stops proxy services
+- `$ gerdu proxy ls` lists all mappings
+- `$ gerdu proxy dns [-w]` generates dns records
 
 Contributing
 ------------
