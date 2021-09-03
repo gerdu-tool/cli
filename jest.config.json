@@ -6,7 +6,7 @@
   "rootDir": ".",
   "testEnvironment": "node",
   "moduleNameMapper": {
-		"@app/(.*)$": "<rootDir>/src/$1",
+    "@app/(.*)$": "<rootDir>/src/$1",
     "@test/(.*)$": "<rootDir>/test/$1",
     "@root/(.*)$": "<rootDir>/$1"
 	},
