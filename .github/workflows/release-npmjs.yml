@@ -1,18 +1,8 @@
 name: release-npm
 
-# on:
-#   release:
-#     types: [published]
-
 on:
-  push:
-    branches:
-      - main
-      - next
-  pull_request:
-    branches:
-      - main
-      - next
+  release:
+    types: [published]
 
 jobs:
   release:
@@ -44,7 +34,7 @@ jobs:
 
       - name: set package version
         run: yarn version --force --no-git-tag-version --no-commit-hooks --new-version $RELEASE_TAG
-      
+
       - name: install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
@@ -53,7 +43,6 @@ jobs:
 
       - name: Building
         run: yarn run build:prod
-
       # - name: Publishing
       #   run: yarn publish --access public
       #   env:
