@@ -42,7 +42,7 @@ jobs:
         run: echo "`jq '.name="@gerdu-tool/cli"' package.json`" > package.json
       
       - name: update package.json version
-        run: echo "`jq '.version="${RELEASE_TAG}"' package.json`" > package.json
+        run: echo $(jq ".version=\"$RELEASE_TAG\"" package.json) > package.json
 
       - name: Building
         run: yarn run build:prod
