@@ -43,8 +43,9 @@ jobs:
 
       - name: Building
         run: yarn run build:prod
-      # - name: Publishing
-      #   run: yarn publish --access public
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
-      #     NPM_AUTH_TOKEN: ${{ secrets.npm_token }}
+
+      - name: Publishing
+        run: yarn publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+          NPM_AUTH_TOKEN: ${{ secrets.npm_token }}

@@ -50,8 +50,8 @@ jobs:
       - name: Authenticate with GitHub package registry
         run: yarn config set @gerdu-tool:registry https://npm.pkg.github.com
 
-      # - name: Publishing
-      #   run: yarn publish
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publishing
+        run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
