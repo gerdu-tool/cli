@@ -129,7 +129,11 @@ $ gerdu ws add awesome /work/awesome-workspace
 
 # activate workspace
 $ gerdu ws switch awesome
+
+# set dns records
+$ sudo gerdu proxy dns > /etc/hosts
 ```
+
 
 Now Gerdu is ready to run your applications:
 ```console
