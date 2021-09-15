@@ -145,6 +145,12 @@ projects:
     expect(fs.lstatSync).toHaveBeenCalledWith('./path');
   });
   it('rm directory recursively', () => {
+    jest.spyOn(fs, 'rmSync').mockImplementation(() => {});
+    helper.rmDir('./path');
+    expect(fs.rmSync).toHaveBeenCalledWith('./path', { recursive: true, force: true });
+  });
+  it('rm directory recursively ( old-versions )', () => {
+    fs.rmSync = undefined;
     jest.spyOn(fs, 'rmdirSync').mockImplementation(() => {});
     helper.rmDir('./path');
     expect(fs.rmdirSync).toHaveBeenCalledWith('./path', { recursive: true, force: true });
