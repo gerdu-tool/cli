@@ -11,6 +11,7 @@ import workspaceService from '@app/services/workspace-service';
 import dockerCompose from '@app/helpers/docker-compose';
 import {
   WORKSPACE_CACHE_DIR_NAME, WORKSPACE_COMPOSE_FILE_NAME, WORKSPACE_CACHE_TEMP_DIR_NAME,
+  ASSETS_DIR_NAME, PROXY_DIR_NAME, PROXY_COMPOSE_FILE_NAME,
 } from '@app/consts';
 
 describe('install-sync-command', () => {
@@ -18,10 +19,13 @@ describe('install-sync-command', () => {
   const workspace = Object.freeze(faker.createWorkspace());
   const chart = workspace.charts[0];
   const mapping = workspace.charts[0].mappings[0];
+  const workspacePath = path.resolve(workspace.path);
   const cacheDirectory = path.resolve(workspace.path, WORKSPACE_CACHE_DIR_NAME);
   const tempDirectory = path.resolve(cacheDirectory, WORKSPACE_CACHE_TEMP_DIR_NAME);
   const finalComposeFile = path.resolve(workspace.path, WORKSPACE_COMPOSE_FILE_NAME);
   const chartSpec = path.resolve(tempDirectory, '1-compose.yaml');
+  const proxySpec = path.resolve(path.root(), ASSETS_DIR_NAME, PROXY_DIR_NAME, PROXY_COMPOSE_FILE_NAME);
+  const workspaceSpec = path.resolve(tempDirectory, '0-compose.yaml');
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -149,10 +153,12 @@ describe('install-sync-command', () => {
 
   it('merges and stores all compose files', async () => {
     await command.run();
-    expect(fs.writeAllText).toHaveBeenCalledWith(
-      finalComposeFile,
-      '{ result:1.0 }',
-    );
+    expect(dockerCompose.exec).toHaveBeenCalledWith({
+      files: [workspaceSpec, chartSpec, proxySpec],
+      cwd: workspacePath,
+      cmd: `convert --format=yaml --no-interpolate > ${finalComposeFile}`,
+      options: { silent: true },
+    });
   });
 
   it('executes stage scripts', async () => {
