@@ -5,7 +5,10 @@ import pathHelper from 'path';
 
 const rm = (p: string): void => fs.unlinkSync(p);
 const mkdir = (p: string): void => fs.mkdirSync(p);
-const rmDir = (p: string): void => fs.rmSync(p, { recursive: true, force: true });
+const rmDir = (p: string): void => {
+  if (fs.rmSync) fs.rmSync(p, { recursive: true, force: true });
+  else fs.rmdirSync(p, { recursive: true, force: true });
+};
 const exists = (p: string): boolean => fs.existsSync(p);
 const rmLnSymDir = (path: string): void => fs.unlinkSync(path);
 const isDirectory = (p: string): boolean => fs.lstatSync(p).isDirectory();
