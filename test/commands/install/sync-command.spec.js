@@ -156,7 +156,7 @@ describe('install-sync-command', () => {
     expect(dockerCompose.exec).toHaveBeenCalledWith({
       files: [workspaceSpec, chartSpec, proxySpec],
       cwd: workspacePath,
-      cmd: `convert --format=yaml > ${finalComposeFile}`,
+      cmd: `convert --format=yaml --no-interpolate > ${finalComposeFile}`,
       options: { silent: true },
     });
   });

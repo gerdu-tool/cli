@@ -97,7 +97,7 @@ const syncCommand = async () => {
     await dockerCompose.exec({
       files: [...allComposeFiles, proxySpec],
       cwd: path.resolve(workspace.path),
-      cmd: `convert --format=yaml > ${finalComposeFilePath}`,
+      cmd: `convert --format=yaml --no-interpolate > ${finalComposeFilePath}`,
       options: { silent: true },
     });
     logger.logDebug(`specs merged into ${finalComposeFilePath}.`);
