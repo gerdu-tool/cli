@@ -94,8 +94,12 @@ const syncCommand = async () => {
       fs.writeAllYaml(output, spec);
       allComposeFiles.push(output);
     });
-    const finalComposeFile = await dockerCompose.exec({ files: [...allComposeFiles, proxySpec], cwd: path.resolve(workspace.path), cmd: 'convert --format=yaml' });
-    fs.writeAllText(finalComposeFilePath, finalComposeFile);
+    await dockerCompose.exec({
+      files: [...allComposeFiles, proxySpec],
+      cwd: path.resolve(workspace.path),
+      cmd: `convert --format=yaml --no-interpolate > ${finalComposeFilePath}`,
+      options: { silent: true },
+    });
     logger.logDebug(`specs merged into ${finalComposeFilePath}.`);
   }
 
