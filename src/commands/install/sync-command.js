@@ -38,6 +38,7 @@ const attachMappingLabelsToServiceSpec = ({ chart }: {chart: Chart}) => {
       const { cors } = m;
       mappingService.labels[`traefik.http.middlewares.${traefikUniqueName}_headers.headers.accesscontrolallowmethods`] = cors.allowMethods;
       mappingService.labels[`traefik.http.middlewares.${traefikUniqueName}_headers.headers.accesscontrolallowheaders`] = cors.allowHeaders;
+      mappingService.labels[`traefik.http.middlewares.${traefikUniqueName}_headers.headers.accessControlExposeHeaders`] = cors.allowHeaders;
       mappingService.labels[`traefik.http.middlewares.${traefikUniqueName}_headers.headers.accesscontrolalloworiginlist`] = cors.allowOrigins;
       mappingService.labels[`traefik.http.middlewares.${traefikUniqueName}_headers.headers.accesscontrolallowcredentials`] = cors.allowCredentials.toString();
     }
