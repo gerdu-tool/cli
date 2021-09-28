@@ -96,6 +96,7 @@ describe('install-sync-command', () => {
 
               [`traefik.http.middlewares.${traefikUniqueName}_headers.headers.accesscontrolallowmethods`]: mapping.cors.allowMethods,
               [`traefik.http.middlewares.${traefikUniqueName}_headers.headers.accesscontrolallowheaders`]: mapping.cors.allowHeaders,
+              [`traefik.http.middlewares.${traefikUniqueName}_headers.headers.accessControlExposeHeaders`]: mapping.cors.allowHeaders,
               [`traefik.http.middlewares.${traefikUniqueName}_headers.headers.accesscontrolalloworiginlist`]: mapping.cors.allowOrigins,
               [`traefik.http.middlewares.${traefikUniqueName}_headers.headers.accesscontrolallowcredentials`]: `${mapping.cors.allowCredentials}`,
 
