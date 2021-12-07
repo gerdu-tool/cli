@@ -3,4 +3,4 @@
 // @flow
 import program from '@app/app';
 
-program(process.argv).catch((err: Error) => console.log('Errror:', err));
+program(process.argv).catch((err: Error) => console.log(err));

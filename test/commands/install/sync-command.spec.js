@@ -28,7 +28,7 @@ describe('install-sync-command', () => {
   const workspaceSpec = path.resolve(tempDirectory, '0-compose.yaml');
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
     fs.exists.mockImplementation((p) => p === chart.repo.output);
     jest.spyOn(workspaceService, 'fetch').mockImplementation(() => workspace);
     jest.spyOn(stageService, 'executeStage').mockImplementation(() => Promise.resolve());

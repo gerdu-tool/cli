@@ -1,9 +1,10 @@
 // @flow
-import { Command } from 'commander';
-// $FlowFixMe
+import { Command, CommanderError } from 'commander';
+import logger from '@app/helpers/logger';
 import packageJson from '@root/package.json';
-import { TOOL_NAME, PROXY_SERVICE_NAME } from '@app/consts';
 import versionCheck from '@app/helpers/version-check';
+import { TOOL_NAME, PROXY_SERVICE_NAME } from '@app/consts';
+
 // Workspace
 import lsWorkspaceCommand from '@app/commands/workspace/ls-command';
 import addWorkspaceCommand from '@app/commands/workspace/add-command';
@@ -24,9 +25,12 @@ import composeExecCommand from '@app/commands/compose/compose-command';
 import proxyLsCommand from '@app/commands/proxy/ls-command';
 import proxyDnsCommand from '@app/commands/proxy/dns-command';
 
-const app = (argv: any): Promise<void> => {
-  const commander = new Command(TOOL_NAME)
-    .version(packageJson.version)
+const app = async (argv: any): Promise<void> => {
+  const commander = new Command(TOOL_NAME);
+  // we need to handle exit code manually
+  commander.exitOverride();
+
+  commander.version(packageJson.version)
     .name(TOOL_NAME)
     .description('Define and manage micro services with docker for development');
 
@@ -150,9 +154,27 @@ const app = (argv: any): Promise<void> => {
       .action(() => proxyDnsCommand.run({ write: dnsCommand.opts().write }));
   }
 
-  return commander.parseAsync(argv);
+  const commandPromise = commander.parseAsync(argv);
+  await commandPromise;
 };
 export default async (argv: any) => {
-  await versionCheck();
-  await app(argv);
+  const versionCheckPromise = versionCheck();
+
+  let executionError = null;
+  try {
+    await app(argv);
+  } catch (err) {
+    if (err.exitCode !== 0 && err.code !== 'commander.help') executionError = err;
+  }
+  const [isNewVersionAvailable, version] = await versionCheckPromise;
+  if (isNewVersionAvailable) {
+    logger.printBox([
+      `There is a new version of @gerdu/cli available (${version}).`,
+      `You are currently using @gerdu/cli ${packageJson.version}`,
+      'Run `yarn global add @gerdu/cli -g` to get latest version',
+    ]);
+  }
+
+  // re-throw exception
+  if (executionError) logger.logError(executionError.message);
 };

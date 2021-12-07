@@ -1,4 +1,5 @@
 import app from '@app/app';
+import logger from '@app/helpers/logger';
 import { PROXY_SERVICE_NAME } from '@app/consts';
 import versionCheck from '@app/helpers/version-check';
 
@@ -22,7 +23,7 @@ import composeExecCommand from '@app/commands/compose/compose-command';
 import proxyLsCommand from '@app/commands/proxy/ls-command';
 import proxyDnsCommand from '@app/commands/proxy/dns-command';
 
-jest.mock('@app/helpers/version-check', () => jest.fn());
+jest.mock('@app/helpers/version-check', () => jest.fn(() => Promise.resolve([false, null])));
 
 describe('app', () => {
   beforeEach(() => {
@@ -30,6 +31,18 @@ describe('app', () => {
     jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
+  it('logs error if invalid action happense', async () => {
+    jest.spyOn(logger, 'logError');
+    jest.spyOn(composeExecCommand, 'run').mockImplementation(() => Promise.reject(Error('error')));
+    await app(['node', 'gerdu', 'proxy', 'up']);
+    expect(logger.logError).toHaveBeenCalledWith('error');
+  });
+  it('wont log any error', async () => {
+    jest.spyOn(logger, 'logError');
+    jest.spyOn(composeExecCommand, 'run').mockImplementation(() => Promise.reject(Error('error')));
+    await app(['node', 'gerdu', 'proxy']);
+    expect(logger.logError).not.toHaveBeenCalledWith('error');
+  });
   describe('install', () => {
     it('install services by calling pull/sync/setup', async () => {
       jest.spyOn(installPullCommand, 'run').mockImplementation(() => Promise.resolve());
@@ -216,9 +229,24 @@ describe('app', () => {
       expect(proxyLsCommand.run).toHaveBeenCalledWith();
     });
   });
-  describe('checks version on every req', async () => {
-    jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => Promise.resolve());
+  it('notify user with new version', async () => {
+    jest.spyOn(logger, 'printBox').mockImplementation(() => {});
+    jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => {});
+    versionCheck.mockImplementation(() => Promise.resolve([true, '1.0.0']));
     await app(['node', 'gerdu', 'proxy', 'ls']);
     expect(versionCheck).toHaveBeenCalled();
+    expect(logger.printBox).toHaveBeenCalledWith([
+      'There is a new version of @gerdu/cli available (1.0.0).',
+      'You are currently using @gerdu/cli 0.0.0',
+      'Run `yarn global add @gerdu/cli -g` to get latest version',
+    ]);
+  });
+  it('wont notify user if no new version is available', async () => {
+    jest.spyOn(logger, 'printBox').mockImplementation(() => {});
+    jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => {});
+    versionCheck.mockImplementation(() => Promise.resolve([false]));
+    await app(['node', 'gerdu', 'proxy', 'ls']);
+    expect(versionCheck).toHaveBeenCalled();
+    expect(logger.printBox).not.toHaveBeenCalledWith();
   });
 });

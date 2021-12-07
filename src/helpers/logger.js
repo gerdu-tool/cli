@@ -56,7 +56,7 @@ const printBox = (lines: string[]) => {
   const maxLen = Math.max(...lines.map((s: string) => s.length)) + 2;
   const trim = (start: string, middle: String, end: string, text: string) => {
     const middleStr = Array.from({ length: maxLen - text.length }).join(middle);
-    return `${start}${middle}${text}${middleStr}${end}`;
+    return `${colors.yellow(start)}${colors.yellow(middle)}${text}${colors.yellow(middleStr)}${colors.yellow(end)}`;
   };
   const box = [];
   box.push(trim('╭', '─', '╮', ''));

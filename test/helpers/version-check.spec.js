@@ -34,32 +34,35 @@ describe('version-check', () => {
     });
   });
 
-  it('notify user with new version', async () => {
+  it('returns true, if new version is available', async () => {
     onData.mockImplementation((cb) => cb(Buffer.from(JSON.stringify(genReply(availableVersion)), 'utf8')));
     onEnd.mockImplementation((cb) => cb());
-    await versionCheck();
+    const [isAvailable, version] = await versionCheck();
     expect(https.get).toHaveBeenCalledWith('https://api.npms.io/v2/package/%40gerdu%2Fcli', expect.any(Function));
+    expect(isAvailable).toBeTruthy();
+    expect(version).toBe(availableVersion);
 
-    expect(console.log).toHaveBeenCalledWith([
-      '╭───────────────────────────────────────────────────────────╮',
-      `│ There is a new version of @gerdu/cli available (${availableVersion}).   │`,
-      `│ You are currently using @gerdu/cli ${packageJson.version}                  │`,
-      '│ Run `yarn global add @gerdu/cli -g` to get latest version │',
-      '╰───────────────────────────────────────────────────────────╯',
-    ].join('\n'));
+    // expect(console.log).toHaveBeenCalledWith([
+    //   '╭───────────────────────────────────────────────────────────╮',
+    //   `│ There is a new version of @gerdu/cli available (${availableVersion}).   │`,
+    //   `│ You are currently using @gerdu/cli ${packageJson.version}                  │`,
+    //   '│ Run `yarn global add @gerdu/cli -g` to get latest version │',
+    //   '╰───────────────────────────────────────────────────────────╯',
+    // ].join('\n'));
   });
-  it('wont notify user if no new version available', async () => {
+  it('returns false, if no new version available', async () => {
     onData.mockImplementation((cb) => cb(Buffer.from(JSON.stringify(genReply(packageJson.version)), 'utf8')));
     onEnd.mockImplementation((cb) => cb());
-    await versionCheck();
+    const [isAvailable, version] = await versionCheck();
     expect(https.get).toHaveBeenCalledWith('https://api.npms.io/v2/package/%40gerdu%2Fcli', expect.any(Function));
-    expect(console.log).not.toHaveBeenCalled();
+    expect(isAvailable).toBeFalsy();
+    expect(version).toBe(null);
   });
-  it('ignores for invalid response', async () => {
+  it('returns false, for invalid response', async () => {
     onData.mockImplementation((cb) => cb(Buffer.from(JSON.stringify({ collected: {} }), 'utf8')));
     onEnd.mockImplementation((cb) => cb());
-    await versionCheck();
-    expect(console.log).not.toHaveBeenCalled();
+    const [isAvailable] = await versionCheck();
+    expect(isAvailable).toBeFalsy();
   });
   it('ignores any error', async () => {
     onData.mockImplementation((cb) => cb(Buffer.from(JSON.stringify(genReply(packageJson.version)), 'utf8')));

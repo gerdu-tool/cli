@@ -14,6 +14,7 @@ describe('config-service', () => {
   const config = faker.createGerduConfig({ workspaces: [workspace], settings: { active_workspace: workspace.name } });
 
   beforeEach(() => {
+    jest.resetAllMocks();
     jest.spyOn(fs, 'exists').mockImplementation(() => true);
     jest.spyOn(configSchema, 'set').mockImplementation(() => {});
     jest.spyOn(configSchema, 'get').mockImplementation(() => config);

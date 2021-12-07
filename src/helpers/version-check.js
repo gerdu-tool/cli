@@ -1,10 +1,8 @@
-/* eslint-disable no-console */
 // @flow
 import https from 'https';
 import packageJson from '@root/package.json';
-import logger from '@app/helpers/logger';
 
-const checkVersion = () => new Promise<void>((resolve: any) => {
+const newVersionIsAvailable = () => new Promise<[boolean, string]>((resolve: any) => {
   https.get('https://api.npms.io/v2/package/%40gerdu%2Fcli', (res: any) => {
     const data = [];
     res.on('data', (chunk: any) => data.push(chunk));
@@ -14,14 +12,10 @@ const checkVersion = () => new Promise<void>((resolve: any) => {
       const serverVersion = parseInt(value.replace(/\./g, ''), 10);
       const currentVersion = parseInt(packageJson.version.replace(/\./g, ''), 10);
       if (serverVersion > currentVersion) {
-        logger.printBox([
-          `There is a new version of @gerdu/cli available (${value}).`,
-          `You are currently using @gerdu/cli ${packageJson.version}`,
-          'Run `yarn global add @gerdu/cli -g` to get latest version',
-        ]);
+        resolve([true, value]);
       }
-      resolve('');
+      resolve([false, null]);
     });
-  }).on('error', () => resolve());
+  }).on('error', () => resolve([false, null]));
 });
-export default checkVersion;
+export default newVersionIsAvailable;
