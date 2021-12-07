@@ -1,6 +1,7 @@
 // @flow
 import { Command } from 'commander';
 import logger from '@app/helpers/logger';
+// $FlowFixMe
 import packageJson from '@root/package.json';
 import versionCheck from '@app/helpers/version-check';
 import { TOOL_NAME, PROXY_SERVICE_NAME } from '@app/consts';

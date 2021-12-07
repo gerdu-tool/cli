@@ -1,5 +1,6 @@
 // @flow
 import https from 'https';
+// $FlowFixMe
 import packageJson from '@root/package.json';
 
 const newVersionIsAvailable = () => new Promise<[boolean, string]>((resolve: any) => {
@@ -18,4 +19,4 @@ const newVersionIsAvailable = () => new Promise<[boolean, string]>((resolve: any
     });
   }).on('error', () => resolve([false, null]));
 });
-export default newVersionIsAvailable;
+export default (newVersionIsAvailable: ()=>Promise<[boolean, string]>);
