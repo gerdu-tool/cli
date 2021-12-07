@@ -1,5 +1,5 @@
 // @flow
-import { Command, CommanderError } from 'commander';
+import { Command } from 'commander';
 import logger from '@app/helpers/logger';
 import packageJson from '@root/package.json';
 import versionCheck from '@app/helpers/version-check';
