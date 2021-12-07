@@ -145,6 +145,10 @@ describe('app', () => {
       await app(['node', 'gerdu', 'exec', 'service1', 'sh']);
       expect(composeExecCommand.run).toHaveBeenCalledWith({ cmd: 'exec service1 sh' });
     });
+    it('creates and exec into on-mode off service', async () => {
+      await app(['node', 'gerdu', 'run', '--rm', 'service1', 'sh']);
+      expect(composeExecCommand.run).toHaveBeenCalledWith({ cmd: 'run --rm service1 sh' });
+    });
     it('executes a docker-compose command', async () => {
       jest.spyOn(composeExecCommand, 'run').mockImplementation(() => Promise.resolve());
       await app(['node', 'gerdu', 'compose', 'run', '--rm', 'service1']);
