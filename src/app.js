@@ -113,7 +113,7 @@ const app = async (argv: any): Promise<void> => {
 
     commander.command('run <service> <args...>')
       .allowUnknownOption()
-      .description('Run a one-off service')
+      .description('run a one-off command')
       .action((service: string) => composeExecCommand.run({ cmd: `run ${service} ${commander.args.slice(2).join(' ')}` }));
 
     commander.command('compose <args...>')

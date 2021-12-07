@@ -158,7 +158,12 @@ CLI
 ### Compose commands
 - `$ gerdu build [services...] [-p <profiles...>]` build or rebuild services
 - `$ gerdu up [services...] [-p <profiles...>]` starts services
-- `$ gerdu down [services...] [-p <profiles...>]` stops services
+- `$ gerdu down [services...] [-p <profiles...>]` stops and removes services
+- `$ gerdu kill <args...>` force stops services
+- `$ gerdu stop <args...>` stops services
+- `$ gerdu run <args...>` run a one-off command
+- `$ gerdu exec <args...>` executes a command in a running service
+- `$ gerdu ps <args...>` lists running containers
 - `$ gerdu compose <args...>` docker compose alias
 
 ### Proxy commands
