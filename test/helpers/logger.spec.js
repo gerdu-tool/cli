@@ -9,6 +9,7 @@ describe('logger', () => {
     return colorizedLine;
   };
   beforeEach(() => {
+    jest.resetAllMocks();
     process.env.VERBOSE = 'true';
 
     jest.spyOn(logger, 'write').mockRestore();
@@ -82,5 +83,10 @@ describe('logger', () => {
   it('Truncate empty line', () => {
     logger.error('');
     expect(global.console.log).toHaveBeenCalledTimes(0);
+  });
+
+  it('prints box', () => {
+    logger.printBox(['Line1', 'Line2', 'Line---3']);
+    expect(global.console.log).toHaveBeenCalled();
   });
 });

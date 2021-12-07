@@ -10,6 +10,7 @@ describe('workspace-service', () => {
   const workspace = faker.createWorkspace();
 
   beforeEach(() => {
+    jest.restoreAllMocks();
     jest.spyOn(configService, 'getActiveWorkspace').mockImplementation(() => workspaceSpec);
     jest.spyOn(configService, 'getWorkspace').mockImplementation(() => workspaceSpec);
     jest.spyOn(workspaceSchema, 'get').mockImplementation(() => workspace);

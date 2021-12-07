@@ -7,7 +7,7 @@ describe('view-ls-command', () => {
   const context = faker.createContext();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
     jest.spyOn(contextService, 'fetch').mockImplementation(() => context);
   });
   it('list all services', async () => {
