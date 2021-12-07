@@ -106,6 +106,11 @@ export default (argv: any): Promise<void> => {
       .description('executes a command in a running service')
       .action((service: string) => composeExecCommand.run({ cmd: `exec ${service} ${commander.args.slice(2).join(' ')}` }));
 
+    commander.command('run <service> <args...>')
+      .allowUnknownOption()
+      .description('Run a one-off service')
+      .action((service: string) => composeExecCommand.run({ cmd: `run ${service} ${commander.args.slice(2).join(' ')}` }));
+
     commander.command('compose <args...>')
       .allowUnknownOption()
       .description('docker compose alias')
