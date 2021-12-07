@@ -3,7 +3,7 @@ import { Command } from 'commander';
 // $FlowFixMe
 import packageJson from '@root/package.json';
 import { TOOL_NAME, PROXY_SERVICE_NAME } from '@app/consts';
-
+import versionCheck from '@app/helpers/version-check';
 // Workspace
 import lsWorkspaceCommand from '@app/commands/workspace/ls-command';
 import addWorkspaceCommand from '@app/commands/workspace/add-command';
@@ -24,7 +24,7 @@ import composeExecCommand from '@app/commands/compose/compose-command';
 import proxyLsCommand from '@app/commands/proxy/ls-command';
 import proxyDnsCommand from '@app/commands/proxy/dns-command';
 
-export default (argv: any): Promise<void> => {
+const app = (argv: any): Promise<void> => {
   const commander = new Command(TOOL_NAME)
     .version(packageJson.version)
     .name(TOOL_NAME)
@@ -151,4 +151,8 @@ export default (argv: any): Promise<void> => {
   }
 
   return commander.parseAsync(argv);
+};
+export default async (argv: any) => {
+  await versionCheck();
+  await app(argv);
 };

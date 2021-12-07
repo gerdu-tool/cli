@@ -1,5 +1,6 @@
 import app from '@app/app';
 import { PROXY_SERVICE_NAME } from '@app/consts';
+import versionCheck from '@app/helpers/version-check';
 
 // workspace
 import workspaceAddCommand from '@app/commands/workspace/add-command';
@@ -21,9 +22,12 @@ import composeExecCommand from '@app/commands/compose/compose-command';
 import proxyLsCommand from '@app/commands/proxy/ls-command';
 import proxyDnsCommand from '@app/commands/proxy/dns-command';
 
+jest.mock('@app/helpers/version-check', () => jest.fn());
+
 describe('app', () => {
   beforeEach(() => {
     jest.restoreAllMocks();
+    jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   describe('install', () => {
@@ -211,5 +215,10 @@ describe('app', () => {
       await app(['node', 'gerdu', 'proxy', 'ls']);
       expect(proxyLsCommand.run).toHaveBeenCalledWith();
     });
+  });
+  describe('checks version on every req', async () => {
+    jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => Promise.resolve());
+    await app(['node', 'gerdu', 'proxy', 'ls']);
+    expect(versionCheck).toHaveBeenCalled();
   });
 });
