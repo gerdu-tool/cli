@@ -52,6 +52,19 @@ const commandStart = (msg: string, ...params: any[]): void => {
 };
 const commandCompleted = (): void => { groupEnd(); };
 
+const printBox = (lines: string[]) => {
+  const maxLen = Math.max(...lines.map((s: string) => s.length)) + 2;
+  const trim = (start: string, middle: String, end: string, text: string) => {
+    const middleStr = Array.from({ length: maxLen - text.length }).join(middle);
+    return `${start}${middle}${text}${middleStr}${end}`;
+  };
+  const box = [];
+  box.push(trim('╭', '─', '╮', ''));
+  lines.forEach((line: string) => box.push((trim('│', ' ', '│', line))));
+  box.push((trim('╰', '─', '╯', '')));
+  write(box.join('\n'));
+};
+
 export default {
   write,
   writeTable,
@@ -77,4 +90,7 @@ export default {
   // grouping
   groupStart,
   groupEnd,
+
+  // utils
+  printBox,
 };

@@ -83,4 +83,16 @@ describe('logger', () => {
     logger.error('');
     expect(global.console.log).toHaveBeenCalledTimes(0);
   });
+
+  it('prints box', () => {
+    logger.printBox(['Line1', 'Line2', 'Line---3']);
+    const expectedBox = [
+      '╭──────────╮',
+      '│ Line1    │',
+      '│ Line2    │',
+      '│ Line---3 │',
+      '╰──────────╯',
+    ].join('\n');
+    expect(global.console.log).toHaveBeenCalledWith(expectedBox);
+  });
 });
