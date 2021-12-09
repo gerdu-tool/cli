@@ -1,5 +1,4 @@
 import app from '@app/app';
-import omelette from 'omelette';
 import logger from '@app/helpers/logger';
 import { PROXY_SERVICE_NAME } from '@app/consts';
 import versionCheck from '@app/helpers/version-check';
@@ -23,6 +22,7 @@ import composeExecCommand from '@app/commands/compose/compose-command';
 // proxy
 import proxyLsCommand from '@app/commands/proxy/ls-command';
 import proxyDnsCommand from '@app/commands/proxy/dns-command';
+import switchCommand from '@app/commands/workspace/switch-command';
 
 const mockOmpletteInit = jest.fn();
 const mockOmletteTree = jest.fn(() => ({ init: mockOmpletteInit }));
@@ -263,6 +263,12 @@ describe('app', () => {
   });
   describe('config', () => {
     describe('completion', () => {
+      beforeEach(() => {
+        jest.spyOn(switchCommand, 'suggest').mockImplementation(() => {});
+        jest.spyOn(composeExecCommand, 'suggest').mockImplementation(() => {});
+        jest.spyOn(installSetupCommand, 'suggest').mockImplementation(() => {});
+      });
+
       it('execute suggestions', async () => {
         await app(['node', 'gerdu', 'config', 'completion', 'remove']);
         const tree = mockOmletteTree.mock.calls[0];
