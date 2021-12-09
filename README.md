@@ -57,9 +57,9 @@ Using Gerdu cli is basically a three-step process:
 2. Define your charts, which contains `repository` and `docker-compose` configurations.
 3. Lastly, run `gerdu install` and `gerdu up`. Gerdu will install and starts your entire workspace. 
 
-A Workspace is a directory contains `.gerdu.yaml` file which looks like this:
-
 > Note: if you want to use shell completion feature run `gerdu config completion setup`
+
+A Workspace is a directory contains `.gerdu.yaml` file which looks like this:
 
 ```yaml
 # .gerdu.yaml
