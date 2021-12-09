@@ -20,28 +20,36 @@ describe('compose-exec-command', () => {
     jest.spyOn(contextService, 'fetch').mockImplementation(() => context);
     jest.spyOn(composeService, 'exec').mockImplementation(() => Promise.resolve());
   });
-  it('execs compose cmd without parameters', async () => {
-    await command.run({ cmd: '' });
-    expect(composeService.exec).toHaveBeenCalledWith({
-      context, services: [], profiles: [], cmd: '', options: { interactive: true },
+
+  describe('#run', () => {
+    it('execs compose cmd without parameters', async () => {
+      await command.run({ cmd: '' });
+      expect(composeService.exec).toHaveBeenCalledWith({
+        context, services: [], profiles: [], cmd: '', options: { interactive: true },
+      });
+    });
+    it('execs compose cmd for all services', async () => {
+      await command.run({ parameters, cmd });
+      expect(composeService.exec).toHaveBeenCalledWith({
+        context, services: [], profiles: [], cmd, options: { interactive: true },
+      });
+    });
+    it('execs compose cmd for specified services', async () => {
+      await command.run({ parameters, services, cmd });
+      expect(composeService.exec).toHaveBeenCalledWith({
+        context, services, profiles: [], cmd, options: { interactive: true },
+      });
+    });
+    it('execs compose cmd for specified profiles', async () => {
+      await command.run({ parameters, profiles, cmd });
+      expect(composeService.exec).toHaveBeenCalledWith({
+        context, services: [], profiles, cmd, options: { interactive: true },
+      });
     });
   });
-  it('execs compose cmd for all services', async () => {
-    await command.run({ parameters, cmd });
-    expect(composeService.exec).toHaveBeenCalledWith({
-      context, services: [], profiles: [], cmd, options: { interactive: true },
-    });
-  });
-  it('execs compose cmd for specified services', async () => {
-    await command.run({ parameters, services, cmd });
-    expect(composeService.exec).toHaveBeenCalledWith({
-      context, services, profiles: [], cmd, options: { interactive: true },
-    });
-  });
-  it('execs compose cmd for specified profiles', async () => {
-    await command.run({ parameters, profiles, cmd });
-    expect(composeService.exec).toHaveBeenCalledWith({
-      context, services: [], profiles, cmd, options: { interactive: true },
+  describe('#suggest', () => {
+    it('returns suggestion tree', () => {
+      expect(command.suggest()).toMatchObject(context.services);
     });
   });
 });

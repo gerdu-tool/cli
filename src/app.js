@@ -1,6 +1,8 @@
 // @flow
-import { Command } from 'commander';
 import logger from '@app/helpers/logger';
+
+import cli from '@app/helpers/cli';
+
 // $FlowFixMe
 import packageJson from '@root/package.json';
 import versionCheck from '@app/helpers/version-check';
@@ -27,9 +29,8 @@ import proxyLsCommand from '@app/commands/proxy/ls-command';
 import proxyDnsCommand from '@app/commands/proxy/dns-command';
 
 const app = async (argv: any): Promise<void> => {
-  const commander = new Command(TOOL_NAME);
+  const commander = cli(TOOL_NAME);
   // we need to handle exit code manually
-  commander.exitOverride();
 
   commander.version(packageJson.version)
     .name(TOOL_NAME)
@@ -37,15 +38,19 @@ const app = async (argv: any): Promise<void> => {
 
   // workspace
   {
-    const wsCommand = commander.command('ws').description('manage workspaces');
+    const wsCommand = commander.command('ws').description('manage workspaces').complete('ws');
     wsCommand.command('add <name> <path>')
       .description('adds an existing workspace')
+      .complete('add')
       .action((name: string, workspacePath: string) => addWorkspaceCommand.run({ name, workspacePath }));
+
     wsCommand.command('ls')
       .description('lists all workspaces')
+      .complete('ls')
       .action(() => lsWorkspaceCommand.run());
     wsCommand.command('switch <name>')
       .description('switchs to workspace')
+      .complete('switch', () => switchWorkspaceCommand.suggest())
       .action((name: string) => switchWorkspaceCommand.run({ name }));
   }
 
@@ -53,6 +58,7 @@ const app = async (argv: any): Promise<void> => {
   {
     commander.command('install')
       .description('installs charts')
+      .complete('install')
       .action(async () => {
         await pullInstallCommand.run();
         await syncInstallCommand.run();
@@ -60,12 +66,15 @@ const app = async (argv: any): Promise<void> => {
       });
     commander.command('pull')
       .description('pulls charts')
+      .complete('pull')
       .action(() => pullInstallCommand.run());
     commander.command('sync')
       .description('syncs charts')
+      .complete('sync')
       .action(() => syncInstallCommand.run());
     commander.command('setup [charts...]')
       .description('setups charts or services')
+      .complete('setup', () => setupInstallCommand.suggest())
       .action((charts: string[]) => setupInstallCommand.run({ charts }));
   }
 
@@ -73,67 +82,79 @@ const app = async (argv: any): Promise<void> => {
   {
     const composeCommand = commander.option('-p, --profile <profiles...>', 'enable profile');
     composeCommand.command('build [services...]')
-      .option('-p, --profile <profiles...>', 'enable profile')
       .description('builds or rebuilds services')
+      .option('-p, --profile <profiles...>', 'enable profile')
+      .complete('build', () => composeExecCommand.suggest())
       .action((services: string[]) => composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'build' }));
 
     composeCommand.command('up [services...]')
-      .option('-p, --profile <profiles...>', 'enable profile')
       .description('starts services')
+      .option('-p, --profile <profiles...>', 'enable profile')
+      .complete('up', () => composeExecCommand.suggest())
       .action((services: string[]) => composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'up -d' }));
 
     composeCommand.command('down [services...]')
       .description('stops and removes containers, networks')
       .option('-p, --profile <profiles...>', 'enable profile')
+      .complete('down', () => composeExecCommand.suggest())
       .action((services: string[]) => composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'rm -f -s -v' }));
 
     composeCommand.command('logs [services...]')
       .description('displays services logs')
       .option('-p, --profile <profiles...>', 'enable profile')
+      .complete('logs', () => composeExecCommand.suggest())
       .action((services: string[]) => composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'logs -f' }));
 
     composeCommand.command('stop [services...]')
       .description('stops services')
       .option('-p, --profile <profiles...>', 'enable profile')
+      .complete('stop', () => composeExecCommand.suggest())
       .action((services: string[]) => composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'stop' }));
 
     composeCommand.command('kill [services...]')
       .description('force stops services')
       .option('-p, --profile <profiles...>', 'enable profile')
+      .complete('kill', () => composeExecCommand.suggest())
       .action((services: string[]) => composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'kill' }));
 
     commander.command('ps')
       .description('lists running containers')
+      .complete('ps', () => composeExecCommand.suggest())
       .action(() => composeExecCommand.run({ cmd: 'ps' }));
 
     commander.command('exec <service> <args...>')
       .allowUnknownOption()
       .description('executes a command in a running service')
-      .action((service: string) => composeExecCommand.run({ cmd: `exec ${service} ${commander.args.slice(2).join(' ')}` }));
+      .complete('exec', () => composeExecCommand.suggest())
+      .action((service: string) => composeExecCommand.run({ cmd: `exec ${service} ${commander.args().slice(2).join(' ')}` }));
 
     commander.command('run <service> <args...>')
       .allowUnknownOption()
       .description('run a one-off command')
-      .action((service: string) => composeExecCommand.run({ cmd: `run ${service} ${commander.args.slice(2).join(' ')}` }));
+      .complete('run', () => composeExecCommand.suggest())
+      .action((service: string) => composeExecCommand.run({ cmd: `run ${service} ${commander.args().slice(2).join(' ')}` }));
 
     commander.command('compose <args...>')
       .allowUnknownOption()
       .description('docker compose alias')
-      .action(() => composeExecCommand.run({ cmd: commander.args.slice(1).join(' ') }));
+      .complete('compoase')
+      .action(() => composeExecCommand.run({ cmd: commander.args().slice(1).join(' ') }));
   }
 
   // view
   {
     commander.command('ls')
       .description('lists services and profiles')
+      .complete('ls')
       .action(() => lsViewCommand.run());
   }
 
   // Proxy
   {
-    const proxyCommand = commander.command('proxy').description('manage proxy service');
+    const proxyCommand = commander.command('proxy').description('manage proxy service').complete('proxy');
     proxyCommand.command('up')
       .description('starts proxy service')
+      .complete('up')
       .action(() => composeExecCommand.run({ services: [PROXY_SERVICE_NAME], profiles: [], cmd: 'up -d' }));
 
     proxyCommand.command('down')
@@ -148,17 +169,30 @@ const app = async (argv: any): Promise<void> => {
       .description('lists mappings')
       .action(() => proxyLsCommand.run());
 
-    const dnsCommand = proxyCommand.command('dns');
+    const dnsCommand = proxyCommand.command('dns').complete('dns');
     dnsCommand
       .option('-w, --write', 'write to hosts')
       .description('generates dns records')
       .action(() => proxyDnsCommand.run({ write: dnsCommand.opts().write }));
   }
 
-  const commandPromise = commander.parseAsync(argv);
-  await commandPromise;
+  // auto-complete
+  {
+    const toolCommand = commander.command('config').description('tool config');
+    const completionCommand = toolCommand.command('completion');
+    completionCommand
+      .command('remove')
+      .description('removes autocompletion feature')
+      .action(() => commander.$omelette.cleanupShellInitFile());
+    completionCommand
+      .command('setup')
+      .description('installs autocompletion feature')
+      .action(() => commander.$omelette.setupShellInitFile());
+  }
+
+  await commander.execute(argv);
 };
-export default async (argv: any) => {
+export default async (argv: string[]) => {
   const versionCheckPromise = versionCheck();
 
   let executionError = null;
@@ -177,5 +211,7 @@ export default async (argv: any) => {
   }
 
   // re-throw exception
-  if (executionError) logger.logError(executionError.message);
+  if (executionError) {
+    logger.logError(executionError.message);
+  }
 };

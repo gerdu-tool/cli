@@ -11,7 +11,7 @@ const setupCommand = async ({ charts = [] }: Props) => {
 
   const theCharts = charts.length === 0
     ? workspace.charts
-    : workspace.charts.filter((s: Chart) => charts.indexOf(s.name) !== -1);
+    : workspace.charts.filter((chart: Chart) => charts.indexOf(chart.name) !== -1);
 
   for (const chart of theCharts) {
     logger.commandStart(chart.name);
@@ -24,7 +24,12 @@ const setupCommand = async ({ charts = [] }: Props) => {
   logger.commandCompleted();
   logger.info('Done');
 };
+const suggestCommand = (): string[] => {
+  const { workspace } = contextService.fetch();
+  return workspace.charts.map((chart: Chart) => chart.name);
+};
 
 export default {
   run: setupCommand,
+  suggest: suggestCommand,
 };
