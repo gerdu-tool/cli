@@ -1,4 +1,5 @@
 import app from '@app/app';
+import omelette from 'omelette';
 import logger from '@app/helpers/logger';
 import { PROXY_SERVICE_NAME } from '@app/consts';
 import versionCheck from '@app/helpers/version-check';
@@ -23,22 +24,33 @@ import composeExecCommand from '@app/commands/compose/compose-command';
 import proxyLsCommand from '@app/commands/proxy/ls-command';
 import proxyDnsCommand from '@app/commands/proxy/dns-command';
 
+const mockOmpletteInit = jest.fn();
+const mockOmletteTree = jest.fn(() => ({ init: mockOmpletteInit }));
+const mockOmletteCleanupShellInitFile = jest.fn();
+const mockOmletteSetupShellInitFile = jest.fn();
+
 jest.mock('@app/helpers/version-check', () => jest.fn(() => Promise.resolve([false, null])));
+jest.mock('omelette', () => jest.fn(() => ({
+  tree: mockOmletteTree,
+  cleanupShellInitFile: mockOmletteCleanupShellInitFile,
+  setupShellInitFile: mockOmletteSetupShellInitFile,
+})));
 
 describe('app', () => {
   beforeEach(() => {
     jest.restoreAllMocks();
     jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   it('logs error if invalid action happense', async () => {
-    jest.spyOn(logger, 'logError');
+    jest.spyOn(logger, 'logError').mockImplementation(() => {});
     jest.spyOn(composeExecCommand, 'run').mockImplementation(() => Promise.reject(Error('error')));
     await app(['node', 'gerdu', 'proxy', 'up']);
     expect(logger.logError).toHaveBeenCalledWith('error');
   });
   it('wont log any error', async () => {
-    jest.spyOn(logger, 'logError');
+    jest.spyOn(logger, 'logError').mockImplementation(() => {});
     jest.spyOn(composeExecCommand, 'run').mockImplementation(() => Promise.reject(Error('error')));
     await app(['node', 'gerdu', 'proxy']);
     expect(logger.logError).not.toHaveBeenCalledWith('error');
@@ -248,5 +260,30 @@ describe('app', () => {
     await app(['node', 'gerdu', 'proxy', 'ls']);
     expect(versionCheck).toHaveBeenCalled();
     expect(logger.printBox).not.toHaveBeenCalledWith();
+  });
+  describe('config', () => {
+    describe('completion', () => {
+      it('execute suggestions', async () => {
+        await app(['node', 'gerdu', 'config', 'completion', 'remove']);
+        const tree = mockOmletteTree.mock.calls[0];
+        const testTreeRecursive = (childTree) => {
+          if (typeof childTree === 'function') {
+            expect(() => childTree()).not.toThrow();
+          }
+          if (typeof childTree === 'object') {
+            Object.keys(childTree).forEach((k) => testTreeRecursive(childTree[k]));
+          }
+        };
+        testTreeRecursive(tree);
+      });
+      it('removes completion setup', async () => {
+        await app(['node', 'gerdu', 'config', 'completion', 'remove']);
+        expect(mockOmletteCleanupShellInitFile).toHaveBeenCalled();
+      });
+      it('setup completion setup', async () => {
+        await app(['node', 'gerdu', 'config', 'completion', 'setup']);
+        expect(mockOmletteSetupShellInitFile).toHaveBeenCalled();
+      });
+    });
   });
 });

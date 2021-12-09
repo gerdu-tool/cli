@@ -21,20 +21,27 @@ describe('workspace-switch-command', () => {
     jest.spyOn(configService, 'fetch').mockImplementation(() => config);
     jest.spyOn(configService, 'save').mockImplementation(() => {});
   });
-  it('switches active workspace', () => {
-    command.run({ name: ws2.name });
-    expect(configService.save).toHaveBeenCalledWith({
-      ...config,
-      settings: {
-        test: true,
-        active_workspace: ws2.name,
-      },
+  describe('#run', () => {
+    it('switches active workspace', () => {
+      command.run({ name: ws2.name });
+      expect(configService.save).toHaveBeenCalledWith({
+        ...config,
+        settings: {
+          test: true,
+          active_workspace: ws2.name,
+        },
+      });
+    });
+    it('raise error for invalid params', () => {
+      expect(() => command.run({ name: undefined })).toThrowError('name is required!');
+    });
+    it('raise error if workspace not found', () => {
+      expect(() => command.run({ name: 'invalid' })).toThrowError(messages.workspaceNotFound('invalid'));
     });
   });
-  it('raise error for invalid params', () => {
-    expect(() => command.run({ name: undefined })).toThrowError('name is required!');
-  });
-  it('raise error if workspace not found', () => {
-    expect(() => command.run({ name: 'invalid' })).toThrowError(messages.workspaceNotFound('invalid'));
+  describe('#suggest', () => {
+    it('returns suggestion tree', () => {
+      expect(command.suggest()).toMatchObject(config.workspaces.map((w) => w.name));
+    });
   });
 });

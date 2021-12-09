@@ -59,6 +59,8 @@ Using Gerdu cli is basically a three-step process:
 
 A Workspace is a directory contains `.gerdu.yaml` file which looks like this:
 
+> Note: if you want to use shell completion feature run `gerdu config completion setup`
+
 ```yaml
 # .gerdu.yaml
 
@@ -171,6 +173,10 @@ CLI
 - `$ gerdu proxy down` stops proxy services
 - `$ gerdu proxy ls` lists all mappings
 - `$ gerdu proxy dns [-w]` generates dns records
+
+### tool config
+- `$ gerdu config completion setup` removes autocompletion feature
+- `$ gerdu config completion remove` installs autocompletion feature 
 
 Contributing
 ------------

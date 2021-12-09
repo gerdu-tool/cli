@@ -16,15 +16,23 @@ describe('install-setup-command', () => {
     jest.spyOn(contextService, 'fetch').mockImplementation(() => context);
     jest.spyOn(stageService, 'executeStage').mockImplementation(() => Promise.resolve());
   });
-  it('executes setup stage scripts', async () => {
-    await command.run({});
-    expect(stageService.executeStage).toHaveBeenCalledTimes(2);
-    expect(stageService.executeStage).toHaveBeenCalledWith(workspace, c1.stages, 'setup');
-    expect(stageService.executeStage).toHaveBeenCalledWith(workspace, c2.stages, 'setup');
+
+  describe('#run', () => {
+    it('executes setup stage scripts', async () => {
+      await command.run({});
+      expect(stageService.executeStage).toHaveBeenCalledTimes(2);
+      expect(stageService.executeStage).toHaveBeenCalledWith(workspace, c1.stages, 'setup');
+      expect(stageService.executeStage).toHaveBeenCalledWith(workspace, c2.stages, 'setup');
+    });
+    it('executes setup stage scripts for specified charts', async () => {
+      await command.run({ charts });
+      expect(stageService.executeStage).toHaveBeenCalledTimes(1);
+      expect(stageService.executeStage).toHaveBeenCalledWith(workspace, c1.stages, 'setup');
+    });
   });
-  it('executes setup stage scripts for specified charts', async () => {
-    await command.run({ charts });
-    expect(stageService.executeStage).toHaveBeenCalledTimes(1);
-    expect(stageService.executeStage).toHaveBeenCalledWith(workspace, c1.stages, 'setup');
+  describe('#suggest', () => {
+    it('returns suggestion tree', () => {
+      expect(command.suggest()).toMatchObject(workspace.charts.map((s) => s.name));
+    });
   });
 });

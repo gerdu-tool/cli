@@ -15,7 +15,12 @@ const composeCommand = async ({ services = [], profiles = [], cmd }: Props) => {
   });
   logger.commandCompleted();
 };
+const suggestCommand = (): string[] => {
+  const context = contextService.fetch();
+  return context.services;
+};
 
 export default {
   run: composeCommand,
+  suggest: suggestCommand,
 };

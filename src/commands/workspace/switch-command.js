@@ -23,7 +23,12 @@ const switchCommand = ({ name = required('name') }: Props) => {
 
   logger.info(`Done, Switched to ${name}`);
 };
+const suggestCommand = (): string[] => {
+  const config = configService.fetch();
+  return config.workspaces.map((ws: GerduConfigWorkspace) => ws.name);
+};
 
 export default {
   run: switchCommand,
+  suggest: suggestCommand,
 };
