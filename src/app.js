@@ -102,7 +102,7 @@ const app = async (argv: any): Promise<void> => {
     composeCommand.command('reload [services...]')
       .description('stops and resstarts containers')
       .option('-p, --profile <profiles...>', 'enable profile')
-      .complete('down', () => composeExecCommand.suggest())
+      .complete('reload', () => composeExecCommand.suggest())
       .action((services: string[]) => {
         composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'rm -f -s -v' });
         composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'up -d' });
