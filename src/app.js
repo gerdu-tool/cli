@@ -99,6 +99,15 @@ const app = async (argv: any): Promise<void> => {
       .complete('down', () => composeExecCommand.suggest())
       .action((services: string[]) => composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'rm -f -s -v' }));
 
+    composeCommand.command('reload [services...]')
+      .description('stops and resstarts containers')
+      .option('-p, --profile <profiles...>', 'enable profile')
+      .complete('down', () => composeExecCommand.suggest())
+      .action((services: string[]) => {
+        composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'rm -f -s -v' });
+        composeExecCommand.run({ services, profiles: composeCommand.opts().profile || [], cmd: 'up -d' });
+      });
+
     composeCommand.command('logs [services...]')
       .description('displays services logs')
       .option('-p, --profile <profiles...>', 'enable profile')

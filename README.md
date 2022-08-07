@@ -160,6 +160,7 @@ CLI
 ### Compose commands
 - `$ gerdu build [services...] [-p <profiles...>]` build or rebuild services
 - `$ gerdu up [services...] [-p <profiles...>]` starts services
+- `$ gerdu reload [services...] [-p <profiles...>]` stops and start the services
 - `$ gerdu down [services...] [-p <profiles...>]` stops and removes services
 - `$ gerdu kill <args...>` force stops services
 - `$ gerdu stop <args...>` stops services
