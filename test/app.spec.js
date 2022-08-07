@@ -39,18 +39,18 @@ jest.mock('omelette', () => jest.fn(() => ({
 describe('app', () => {
   beforeEach(() => {
     jest.restoreAllMocks();
-    jest.spyOn(console, 'log').mockImplementation(() => {});
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, 'log').mockImplementation(() => { });
+    jest.spyOn(console, 'error').mockImplementation(() => { });
   });
 
   it('logs error if invalid action happense', async () => {
-    jest.spyOn(logger, 'logError').mockImplementation(() => {});
+    jest.spyOn(logger, 'logError').mockImplementation(() => { });
     jest.spyOn(composeExecCommand, 'run').mockImplementation(() => Promise.reject(Error('error')));
     await app(['node', 'gerdu', 'proxy', 'up']);
     expect(logger.logError).toHaveBeenCalledWith('error');
   });
   it('wont log any error', async () => {
-    jest.spyOn(logger, 'logError').mockImplementation(() => {});
+    jest.spyOn(logger, 'logError').mockImplementation(() => { });
     jest.spyOn(composeExecCommand, 'run').mockImplementation(() => Promise.reject(Error('error')));
     await app(['node', 'gerdu', 'proxy']);
     expect(logger.logError).not.toHaveBeenCalledWith('error');
@@ -139,6 +139,23 @@ describe('app', () => {
 
       await app(['node', 'gerdu', 'stop', '-p', 'p1', 'p2']);
       expect(composeExecCommand.run).toHaveBeenCalledWith({ services: [], profiles: ['p1', 'p2'], cmd: 'stop' });
+    });
+    it('reload container', async () => {
+      await app(['node', 'gerdu', 'reload']);
+      expect(composeExecCommand.run).toHaveBeenCalledWith({ services: [], profiles: [], cmd: 'rm -f -s -v' });
+      expect(composeExecCommand.run).toHaveBeenCalledWith({ services: [], profiles: [], cmd: 'up -d' });
+
+      await app(['node', 'gerdu', 'reload', 's1', 's2']);
+      expect(composeExecCommand.run).toHaveBeenCalledWith({ services: ['s1', 's2'], profiles: [], cmd: 'rm -f -s -v' });
+      expect(composeExecCommand.run).toHaveBeenCalledWith({ services: ['s1', 's2'], profiles: [], cmd: 'up -d' });
+
+      await app(['node', 'gerdu', 'reload', '-p', 'p1']);
+      expect(composeExecCommand.run).toHaveBeenCalledWith({ services: [], profiles: ['p1'], cmd: 'rm -f -s -v' });
+      expect(composeExecCommand.run).toHaveBeenCalledWith({ services: [], profiles: ['p1'], cmd: 'up -d' });
+
+      await app(['node', 'gerdu', 'reload', '-p', 'p1', 'p2']);
+      expect(composeExecCommand.run).toHaveBeenCalledWith({ services: [], profiles: ['p1', 'p2'], cmd: 'rm -f -s -v' });
+      expect(composeExecCommand.run).toHaveBeenCalledWith({ services: [], profiles: ['p1', 'p2'], cmd: 'up -d' });
     });
     it('force stops container', async () => {
       await app(['node', 'gerdu', 'kill']);
@@ -242,8 +259,8 @@ describe('app', () => {
     });
   });
   it('notify user with new version', async () => {
-    jest.spyOn(logger, 'printBox').mockImplementation(() => {});
-    jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => {});
+    jest.spyOn(logger, 'printBox').mockImplementation(() => { });
+    jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => { });
     versionCheck.mockImplementation(() => Promise.resolve([true, '1.0.0']));
     await app(['node', 'gerdu', 'proxy', 'ls']);
     expect(versionCheck).toHaveBeenCalled();
@@ -254,8 +271,8 @@ describe('app', () => {
     ]);
   });
   it('wont notify user if no new version is available', async () => {
-    jest.spyOn(logger, 'printBox').mockImplementation(() => {});
-    jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => {});
+    jest.spyOn(logger, 'printBox').mockImplementation(() => { });
+    jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => { });
     versionCheck.mockImplementation(() => Promise.resolve([false]));
     await app(['node', 'gerdu', 'proxy', 'ls']);
     expect(versionCheck).toHaveBeenCalled();
@@ -264,9 +281,9 @@ describe('app', () => {
   describe('config', () => {
     describe('completion', () => {
       beforeEach(() => {
-        jest.spyOn(switchCommand, 'suggest').mockImplementation(() => {});
-        jest.spyOn(composeExecCommand, 'suggest').mockImplementation(() => {});
-        jest.spyOn(installSetupCommand, 'suggest').mockImplementation(() => {});
+        jest.spyOn(switchCommand, 'suggest').mockImplementation(() => { });
+        jest.spyOn(composeExecCommand, 'suggest').mockImplementation(() => { });
+        jest.spyOn(installSetupCommand, 'suggest').mockImplementation(() => { });
       });
 
       it('execute suggestions', async () => {
