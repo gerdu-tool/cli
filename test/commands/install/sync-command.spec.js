@@ -29,10 +29,11 @@ describe('install-sync-command', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    fs.readAllText.mockImplementation(() => 'some-value');
     fs.exists.mockImplementation((p) => p === chart.repo.output);
     jest.spyOn(workspaceService, 'fetch').mockImplementation(() => workspace);
     jest.spyOn(stageService, 'executeStage').mockImplementation(() => Promise.resolve());
-    jest.spyOn(contextService, 'save').mockImplementation(() => {});
+    jest.spyOn(contextService, 'save').mockImplementation(() => { });
     jest.spyOn(configService, 'fetch').mockImplementation(() => config);
     jest.spyOn(dockerCompose, 'exec').mockImplementation(() => Promise.resolve('{ result:1.0 }'));
   });
@@ -153,6 +154,7 @@ describe('install-sync-command', () => {
   });
 
   it('merges and stores all compose files', async () => {
+    fs.readAllText.mockImplementation(() => 'some-value');
     await command.run();
     expect(dockerCompose.exec).toHaveBeenCalledWith({
       files: [workspaceSpec, chartSpec, proxySpec],
@@ -160,6 +162,7 @@ describe('install-sync-command', () => {
       cmd: `convert --format=yaml --no-interpolate > ${finalComposeFile}`,
       options: { silent: true },
     });
+    expect(fs.writeAllText).toHaveBeenCalled();
   });
 
   it('executes stage scripts', async () => {

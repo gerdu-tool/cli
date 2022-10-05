@@ -14,7 +14,7 @@ import {
   ASSETS_DIR_NAME, PROXY_DIR_NAME, PROXY_COMPOSE_FILE_NAME,
 } from '@app/consts';
 
-const attachMappingLabelsToServiceSpec = ({ chart }: {chart: Chart}) => {
+const attachMappingLabelsToServiceSpec = ({ chart }: { chart: Chart }) => {
   const spec = JSON.parse(JSON.stringify(chart.compose));
 
   chart.mappings.forEach((m: Mapping) => {
@@ -103,6 +103,11 @@ const syncCommand = async () => {
     });
     logger.logDebug(`specs merged into ${finalComposeFilePath}.`);
   }
+
+  // issue-45: https://github.com/gerdu-tool/cli/issues/45
+  //  it seems becuase of a bug, "docker compose convert" commands duplicates "$" in the end result
+  const content = fs.readAllText(finalComposeFilePath);
+  fs.writeAllText(finalComposeFilePath, content.replace(/\$\$/g, '$'));
 
   // executing stages
   for (const chart of workspace.charts) {
