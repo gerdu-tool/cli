@@ -24,6 +24,9 @@ import proxyLsCommand from '@app/commands/proxy/ls-command';
 import proxyDnsCommand from '@app/commands/proxy/dns-command';
 import switchCommand from '@app/commands/workspace/switch-command';
 
+// tool
+import updateCheckCommand from '@app/commands/tool/update-check-command';
+
 const mockOmpletteInit = jest.fn();
 const mockOmletteTree = jest.fn(() => ({ init: mockOmpletteInit }));
 const mockOmletteCleanupShellInitFile = jest.fn();
@@ -258,26 +261,6 @@ describe('app', () => {
       expect(proxyLsCommand.run).toHaveBeenCalledWith();
     });
   });
-  it('notify user with new version', async () => {
-    jest.spyOn(logger, 'printBox').mockImplementation(() => { });
-    jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => { });
-    versionCheck.mockImplementation(() => Promise.resolve([true, '1.0.0']));
-    await app(['node', 'gerdu', 'proxy', 'ls']);
-    expect(versionCheck).toHaveBeenCalled();
-    expect(logger.printBox).toHaveBeenCalledWith([
-      'There is a new version of @gerdu/cli available (1.0.0).',
-      'You are currently using @gerdu/cli 0.0.0',
-      'Run `yarn global add @gerdu/cli -g` to get latest version',
-    ]);
-  });
-  it('wont notify user if no new version is available', async () => {
-    jest.spyOn(logger, 'printBox').mockImplementation(() => { });
-    jest.spyOn(proxyLsCommand, 'run').mockImplementation(() => { });
-    versionCheck.mockImplementation(() => Promise.resolve([false]));
-    await app(['node', 'gerdu', 'proxy', 'ls']);
-    expect(versionCheck).toHaveBeenCalled();
-    expect(logger.printBox).not.toHaveBeenCalledWith();
-  });
   describe('config', () => {
     describe('completion', () => {
       beforeEach(() => {
@@ -306,6 +289,18 @@ describe('app', () => {
       it('setup completion setup', async () => {
         await app(['node', 'gerdu', 'config', 'completion', 'setup']);
         expect(mockOmletteSetupShellInitFile).toHaveBeenCalled();
+      });
+    });
+  });
+  describe('tool', () => {
+    describe('update', () => {
+      beforeEach(() => {
+        jest.spyOn(updateCheckCommand, 'run').mockImplementation(() => { });
+      });
+
+      it('calls update checkk command', async () => {
+        await app(['node', 'gerdu', 'tool', 'update']);
+        expect(updateCheckCommand.run).toHaveBeenCalled();
       });
     });
   });
