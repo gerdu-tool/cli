@@ -205,7 +205,7 @@ const app = async (argv: any): Promise<void> => {
   // tool
   {
     const toolCommand = commander.command('tool');
-    toolCommand.command('update').description('check if new version is available').action(() => updateCheckCommand.run({ check: true }));
+    toolCommand.command('update').description('check if new version is available').action(() => updateCheckCommand.run());
   }
 
   await commander.execute(argv);
