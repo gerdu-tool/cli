@@ -5,7 +5,6 @@ import cli from '@app/helpers/cli';
 
 // $FlowFixMe
 import packageJson from '@root/package.json';
-import versionCheck from '@app/helpers/version-check';
 import { TOOL_NAME, PROXY_SERVICE_NAME } from '@app/consts';
 
 // Workspace
@@ -27,6 +26,9 @@ import composeExecCommand from '@app/commands/compose/compose-command';
 // proxy
 import proxyLsCommand from '@app/commands/proxy/ls-command';
 import proxyDnsCommand from '@app/commands/proxy/dns-command';
+
+// tool
+import updateCheckCommand from '@app/commands/tool/update-check-command';
 
 const app = async (argv: any): Promise<void> => {
   const commander = cli(TOOL_NAME);
@@ -62,7 +64,7 @@ const app = async (argv: any): Promise<void> => {
       .action(async () => {
         await pullInstallCommand.run();
         await syncInstallCommand.run();
-        await setupInstallCommand.run({ });
+        await setupInstallCommand.run({});
       });
     commander.command('pull')
       .description('pulls charts')
@@ -188,6 +190,7 @@ const app = async (argv: any): Promise<void> => {
   // auto-complete
   {
     const toolCommand = commander.command('config').description('tool config');
+
     const completionCommand = toolCommand.command('completion');
     completionCommand
       .command('remove')
@@ -199,24 +202,20 @@ const app = async (argv: any): Promise<void> => {
       .action(() => commander.$omelette.setupShellInitFile());
   }
 
+  // tool
+  {
+    const toolCommand = commander.command('tool');
+    toolCommand.command('update').description('check if new version is available').action(() => updateCheckCommand.run({ check: true }));
+  }
+
   await commander.execute(argv);
 };
 export default async (argv: string[]) => {
-  const versionCheckPromise = versionCheck();
-
   let executionError = null;
   try {
     await app(argv);
   } catch (err) {
     if (err.exitCode !== 0 && err.code !== 'commander.help') executionError = err;
-  }
-  const [isNewVersionAvailable, version] = await versionCheckPromise;
-  if (isNewVersionAvailable) {
-    logger.printBox([
-      `There is a new version of @gerdu/cli available (${version}).`,
-      `You are currently using @gerdu/cli ${packageJson.version}`,
-      'Run `yarn global add @gerdu/cli -g` to get latest version',
-    ]);
   }
 
   // re-throw exception
